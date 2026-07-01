@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
  
 async function bootstrap() {
   // --- startup env check (helps diagnose Railway/DB config issues) ---
@@ -21,8 +20,10 @@ async function bootstrap() {
       'FATAL: DATABASE_URL is not set. The app will fail to connect to Postgres. ' +
         'Set it in Railway -> service -> Variables (use the Supabase Session pooler URI).',
     );
+    process.exit(1); 
   }
- 
+  const { AppModule } = await import('./app.module');
+
   const app = await NestFactory.create(AppModule);
   app.enableCors({ origin: true });
   app.useGlobalPipes(
